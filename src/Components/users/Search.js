@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-
-const Search =({searchUsers,showClear,clearUsers,setAlert})=>{
-  
+import React, { useState, useContext } from 'react'
+import GithubContext from '../../context/github/githubContext';
+import AlertContext from '../../context/alert/alertContext';
+const Search =()=>{
+      const githubContext = useContext(GithubContext);
+      const alertContext = useContext(AlertContext);
+    
     const [text, setText] = useState('');
   
     // This method is used to dynamically update state whenever text input changes in the search form
@@ -11,9 +13,9 @@ const Search =({searchUsers,showClear,clearUsers,setAlert})=>{
     const onSubmit = e =>{
       e.preventDefault();
       if(text === ''){
-          setAlert('Please enter a username', 'light')
+          alertContext.setAlert('Please enter a username', 'light')
       }else{   
-          searchUsers(text);
+          githubContext.searchUsers(text);
           setText('');
       }
     }
@@ -26,17 +28,10 @@ const Search =({searchUsers,showClear,clearUsers,setAlert})=>{
             />
             <input type="submit" value="Search" className="btn btn-dark btn-block"/>
         </form>
-        {showClear && (
-            <button onClick={clearUsers} className="btn btn-light btn-block">Clear</button>)}
+        {githubContext.users && githubContext.users.length > 0 && (
+            <button onClick={githubContext.clearUsers} className="btn btn-light btn-block">Clear</button>)}
       </div>
-    )
-  
+    )  
 }
 
-Search.propTypes={
-  searchUsers: PropTypes.func.isRequired,
-  clearUsers : PropTypes.func.isRequired,
-  showClear : PropTypes.bool.isRequired,
-  setAlert : PropTypes.func.isRequired,
-}
 export default Search
